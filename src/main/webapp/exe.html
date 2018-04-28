@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JDBC执行器</title>
+</head>
+<script type="text/javascript" src="$!{appRoot}/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="$!{appRoot}/js/bootstrap.js"></script>
+<link href="$!{appRoot}/css/bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="$!{appRoot}/css/style.css" rel="stylesheet"/>
+<body>
+
+<div class="panel panel-default minHeight">
+    <div class="panel-body">
+        <form method="post" role="form" class="form-horizontal">
+            <div class="search" style="margin-bottom:20px;">
+                <div class="form-group mno">
+                    <label class="col-sm-1 control-label" style="text-align:left;">
+                        数据源
+                    </label>
+                    <div class="col-sm-2">
+                        <select name="searchProjectTypeId" id="jdbcType" class="form-control" style="margin:0;padding:0; text-align:left;">
+                            <option value="null">请选择</option>
+                            #foreach($pro in $proList )
+                            <option value="$!pro">$!pro</option>
+                            #end
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group mno">
+                    <label class="col-sm-1 control-label" style="text-align:left;">
+                        SQL语句
+                    </label>
+                    <div class="col-sm-8">
+                        <textarea maxlength="2048" class="form-control" id="sqls" rows="5" placeholder="填写sql" ></textarea>
+                    </div>
+                </div>
+                <input type="button" class="btn btn-primary" onclick="exe();" value="执行" />
+                <div class="form-group mno">
+                    <label class="col-sm-1 control-label" style="text-align:left;">
+                        执行结果
+                    </label>
+                    <div class="col-sm-8">
+                        <textarea maxlength="2048" class="form-control" id="result" rows="5" placeholder="执行结果" ></textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    function exe() {
+        var jdbcType =  $('#jdbcType').val();
+        if (jdbcType == 'null'){
+            alert("请选择数据源");
+            return;
+        }
+        var sqls =  $('#sqls').val();
+        var param = {
+            jdbcType:jdbcType,
+            sqls:sqls
+        };
+        $.ajax({
+            url:"$!{appRoot}/jdbcexe/exe.do",
+            dataType:'text',
+            type:"POST",
+            cache: false,
+            async:false,
+            data:param,
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            dataType:"text",
+            success:function(data){
+                $('#result').val(data);
+            },
+            error: function (data) {
+                alert("处理失败");
+            }
+        });
+    }
+</script>
+</body>
+</html>
